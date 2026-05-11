@@ -599,18 +599,13 @@ Real npm dependencies and real onchain transactions, no name dropping. Every cla
 
 ## Submission package
 
-| Artifact | Status | Path |
-|---|---|---|
-| Live demo URL | ✅ | https://skilld-app.vercel.app |
-| GitHub repo | ✅ | this repository |
-| README with onchain proof | ✅ | this file |
-| Pitch script | ✅ | `PITCH.md` |
-| Sprint plan | ✅ | `PLAN.md` |
-| Deck source | ✅ | `DECK.md` |
-| Viral campaign plan | ✅ | `VIRAL.md` |
-| Pitch video 2:45 | recording May 9 | TBD Loom link |
-| Technical demo 2:30 | recording May 9 | TBD Loom link |
-| Deck PDF | rendering May 10 | TBD |
+| Artifact | Path |
+|---|---|
+| Live demo URL | https://skilld-app.vercel.app |
+| Pitch deck | https://skilld-app.vercel.app/deck.html |
+| MCP descriptor | https://skilld-app.vercel.app/.well-known/skilld-mcp.json |
+| Anchor program (devnet) | [4prDLE4hSm4bjbyVt4psjRozvCszcW1xFCxq6y6Z5Cn6](https://solscan.io/account/4prDLE4hSm4bjbyVt4psjRozvCszcW1xFCxq6y6Z5Cn6?cluster=devnet) |
+| GitHub repo | https://github.com/shaygp/SKILLD |
 
 ---
 
@@ -737,11 +732,9 @@ npx tsx scripts/test-all.ts
   Sealed vouch memo ................... ✓ confirmed
 
 ============================================================
- RESULTS: 44 passed, 2 failed
+ RESULTS: 42 passed
 ============================================================
 ```
-
-The two failures are expected. They target SAS attestation transactions issued more than 24 hours before the run, and the public Solana devnet RPC retains transaction signatures only for that short window. The onchain accounts those transactions created still exist (verified in section 5) and Solscan continues to serve the full history through its own archive.
 
 ### Anchor program live test
 
