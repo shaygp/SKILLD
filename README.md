@@ -1,15 +1,14 @@
 # Skilld
 
-> The onchain career layer for Solana. Your .sol is your CV.
+> Your .sol is your CV.
 
-[![Live demo](https://img.shields.io/badge/live-skilld--pearl.vercel.app-14f195?style=for-the-badge)](https://skilld-app.vercel.app)
+[![Live demo](https://img.shields.io/badge/live-skilld--app.vercel.app-14f195?style=for-the-badge)](https://skilld-app.vercel.app)
 [![Network](https://img.shields.io/badge/network-Solana%20Devnet-0a66c2?style=for-the-badge)](https://solscan.io/account/2HQhDLgsxZAqVFNgjRJ99kmr3Tsap1ssuhEbWhSssNcq?cluster=devnet)
 [![Frontier 2026](https://img.shields.io/badge/submission-Colosseum%20Frontier%202026-000000?style=for-the-badge)](https://colosseum.com/frontier)
-[![License](https://img.shields.io/badge/license-MIT-grey?style=for-the-badge)](#license)
 
-Skilld indexes Colosseum hackathons, Superteam Earn bounties, GitHub commits, mainnet program deploys and peer attestations into a verifiable Builder Score. The score is published onchain via SNS Records V2 native. Attestations are issued through Solana Attestation Service. Paid recruiter intros settle in USDC via x402. AI agents query Builder Scores through the Phantom MCP server descriptor. Sensitive vouches sealed via MagicBlock Private Ephemeral Rollups. Sybil weighting applied via World ID humanity proof.
+Skilld pulls Colosseum placements — Superteam Earn bounties — GitHub commits — mainnet program deploys — peer vouches into one Builder Score, published through SNS Records V2 and read by any Solana app or AI agent.
 
-Solana has 3,200 active builders per month and zero way to know who they are. Today the best Solana hacker in Lagos is invisible. Tomorrow her .sol is her career.
+3,200 builders ship on Solana every month — most of them never make it past a private channel.
 
 ---
 
