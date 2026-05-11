@@ -1,11 +1,5 @@
 # Skilld
 
-> Your .sol is your CV.
-
-[![Live demo](https://img.shields.io/badge/live-skilld--app.vercel.app-14f195?style=for-the-badge)](https://skilld-app.vercel.app)
-[![Network](https://img.shields.io/badge/network-Solana%20Devnet-0a66c2?style=for-the-badge)](https://solscan.io/account/2HQhDLgsxZAqVFNgjRJ99kmr3Tsap1ssuhEbWhSssNcq?cluster=devnet)
-[![Frontier 2026](https://img.shields.io/badge/submission-Colosseum%20Frontier%202026-000000?style=for-the-badge)](https://colosseum.com/frontier)
-
 Skilld pulls Colosseum placements, Superteam Earn bounties, GitHub commits, mainnet program deploys and peer vouches into one Builder Score, published through SNS Records V2 and read by any Solana app or AI agent.
 
 3,200 builders ship on Solana every month. Most of them never make it past a private channel.
