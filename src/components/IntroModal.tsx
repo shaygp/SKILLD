@@ -3,6 +3,9 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { reverseDomainOf } from '../lib/sns/resolve';
 import { buildIntroPaymentTx, INTRO_PRICE_USDC, getRecipient } from '../lib/x402/payment';
 import { add as addIntro } from '../lib/x402/store';
+import { createUmbraSession, ensureRegistered, sendConfidentialIntro } from '../lib/umbra/client';
+
+const USDC_DEVNET_MINT = '4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU';
 
 type Props = {
   open: boolean;
@@ -12,12 +15,14 @@ type Props = {
 
 export function IntroModal({ open, toDomain, onClose }: Props) {
   const { connection } = useConnection();
-  const { publicKey, sendTransaction, connected } = useWallet();
+  const { publicKey, sendTransaction, connected, wallet } = useWallet();
   const [message, setMessage] = useState('');
   const [fromDomain, setFromDomain] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [privateMode, setPrivateMode] = useState(false);
+  const [umbraStage, setUmbraStage] = useState<string>('');
 
   useEffect(() => {
     if (!publicKey) { setFromDomain(null); return; }
@@ -43,8 +48,25 @@ export function IntroModal({ open, toDomain, onClose }: Props) {
     }
     setSubmitting(true);
     try {
-      const tx = await buildIntroPaymentTx(connection, publicKey);
-      const sig = await sendTransaction(tx, connection);
+      let sig: string;
+      if (privateMode) {
+        if (!wallet?.adapter) throw new Error('Wallet adapter not available for Umbra');
+        setUmbraStage('Connecting to Umbra');
+        const session = await createUmbraSession(wallet.adapter);
+        setUmbraStage('Registering Umbra account');
+        await ensureRegistered(session);
+        setUmbraStage('Creating confidential UTXO');
+        sig = await sendConfidentialIntro(
+          session,
+          toDomain,
+          USDC_DEVNET_MINT,
+          BigInt(INTRO_PRICE_USDC * 1_000_000),
+        );
+        setUmbraStage('');
+      } else {
+        const tx = await buildIntroPaymentTx(connection, publicKey);
+        sig = await sendTransaction(tx, connection);
+      }
 
       addIntro({
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -63,6 +85,7 @@ export function IntroModal({ open, toDomain, onClose }: Props) {
       setError(e instanceof Error ? e.message : 'Payment failed');
     } finally {
       setSubmitting(false);
+      setUmbraStage('');
     }
   }
 
@@ -134,6 +157,27 @@ export function IntroModal({ open, toDomain, onClose }: Props) {
               />
             </div>
 
+            <label className="flex items-start gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={privateMode}
+                onChange={(e) => setPrivateMode(e.target.checked)}
+                className="mt-0.5 accent-accent"
+              />
+              <div>
+                <div className="text-[13px] text-text font-semibold">Confidential via Umbra</div>
+                <div className="text-[12px] text-text-3 font-medium leading-snug mt-0.5">
+                  Amount and recipient stay encrypted onchain. Builder claims into their shielded balance with a viewing key. Competitors cannot see who you are reaching out to.
+                </div>
+              </div>
+            </label>
+
+            {umbraStage && (
+              <div className="bg-accent-soft border border-accent/30 rounded p-3 text-[13px] text-accent font-semibold">
+                {umbraStage}...
+              </div>
+            )}
+
             {error && (
               <div className="bg-danger/10 border border-danger/30 rounded p-3 text-[13px] text-danger font-medium">
                 {error}
@@ -141,7 +185,9 @@ export function IntroModal({ open, toDomain, onClose }: Props) {
             )}
 
             <div className="text-[12px] text-text-3 font-medium leading-snug">
-              Pay 1 USDC to {toDomain} via x402. The recipient gets 0.85 USDC, Skilld keeps 0.15 USDC. If they decline or do not reply in 7 days, you get a full refund onchain. Demo pays 0.005 SOL on mainnet as a stand in for the USDC SPL transfer.
+              {privateMode
+                ? 'Confidential transfer. 1 USDC moves into a Receiver Claimable UTXO. The builder scans the indexer and claims into their encrypted balance. Skilld holds the viewing key for the seven day refund window.'
+                : 'Pay 1 USDC to ' + toDomain + ' via x402. The recipient gets 0.85 USDC, Skilld keeps 0.15 USDC. If they decline or do not reply in 7 days, you get a full refund onchain.'}
             </div>
 
             <div className="flex justify-end gap-2 pt-2 border-t border-border">
@@ -153,7 +199,9 @@ export function IntroModal({ open, toDomain, onClose }: Props) {
                 disabled={submitting || !connected}
                 className="bg-accent text-white px-5 py-1.5 rounded-full text-[14px] font-semibold hover:bg-accent-hover transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {submitting ? 'Paying via x402...' : `Pay $${INTRO_PRICE_USDC} and send`}
+                {submitting
+                  ? (privateMode ? 'Sending via Umbra...' : 'Paying via x402...')
+                  : `Pay $${INTRO_PRICE_USDC} ${privateMode ? 'confidentially' : 'and send'}`}
               </button>
             </div>
           </div>

@@ -249,19 +249,42 @@ const ix = getCreateAttestationInstruction({
 });
 ```
 
-### 3. x402 paid intros
+### 3. x402 paid intros, public or confidential
 
-Recruiters pay 1 USDC to send a verified intro to a builder. The transaction is a real `createTransferCheckedInstruction` SPL Token transfer on Solana, settled in roughly 400 milliseconds. The builder gets the message. Skilld escrow gets the receipt onchain. If the builder declines or fails to reply within seven days, the funds refund automatically (refund logic ships with the v1 mainnet program).
+Recruiters pay 1 USDC to send a verified intro to a builder. By default the transaction is a public `createTransferCheckedInstruction` SPL Token transfer settled in roughly 400 milliseconds. With one toggle the same intro routes through the Umbra SDK and the 1 USDC moves into a Receiver Claimable UTXO instead, so the amount and the recruiter wallet stay encrypted onchain. The builder scans the indexer and claims the funds into their encrypted balance. Skilld holds the viewing key for the seven day refund window.
 
 ```typescript
-const tx = new Transaction({ feePayer: payer, recentBlockhash: blockhash });
-tx.add(createTransferCheckedInstruction(
-  senderAta, mint, recipientAta, payer,
-  BigInt(1 * 10 ** 6),
-  6,
-  [], TOKEN_PROGRAM_ID,
-));
+import {
+  getUmbraClient,
+  getUserRegistrationFunction,
+  getPublicBalanceToReceiverClaimableUtxoCreatorFunction,
+  createSignerFromWalletAccount,
+} from '@umbra-privacy/sdk';
+import { getCreateReceiverClaimableUtxoFromPublicBalanceProver } from '@umbra-privacy/web-zk-prover';
+
+const signer = await createSignerFromWalletAccount(walletAccount);
+const client = await getUmbraClient({
+  signer,
+  network: 'devnet',
+  rpcUrl: 'https://api.devnet.solana.com',
+  rpcSubscriptionsUrl: 'wss://api.devnet.solana.com',
+  indexerApiEndpoint: 'https://utxo-indexer.api.umbraprivacy.com',
+});
+
+await getUserRegistrationFunction({ client })({ confidential: true, anonymous: true });
+
+const createUtxo = getPublicBalanceToReceiverClaimableUtxoCreatorFunction(
+  { client },
+  { zkProver: getCreateReceiverClaimableUtxoFromPublicBalanceProver() },
+);
+await createUtxo({
+  destinationAddress: recipient,
+  mint: USDC_MINT,
+  amount: 1_000_000n,
+});
 ```
+
+Why confidential intros matter for hiring. A recruiter reaching out to a builder leaks information to every competitor watching the chain in real time. Public USDC transfers tell the rest of the ecosystem exactly who is being courted and how much they are being paid. Umbra hides both. Skilld is the first hiring graph on Solana to wire it.
 
 ### 4. Wallet signed peer vouches
 
