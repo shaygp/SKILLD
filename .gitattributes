@@ -1,0 +1,5 @@
+package-lock.json linguist-generated=true
+Cargo.lock linguist-generated=true
+*.svg linguist-vendored=true
+public/assets/** linguist-vendored=true
+public/.well-known/skilld-mcp.json linguist-generated=true
