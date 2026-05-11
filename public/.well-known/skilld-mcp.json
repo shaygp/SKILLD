@@ -1,0 +1,71 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/2025-06-18/server.json",
+  "name": "skilld-mcp",
+  "version": "1.0.0",
+  "description": "Skilld Builder Score and attestations on Solana, queryable by any AI agent.",
+  "vendor": {
+    "name": "Skilld",
+    "url": "https://skilld.app"
+  },
+  "transport": {
+    "type": "http",
+    "endpoint": "https://skilld-app.vercel.app/api/mcp"
+  },
+  "tools": [
+    {
+      "name": "get_builder_score",
+      "description": "Resolve a Solana .sol domain to a Builder Score with breakdown by source (Colosseum hackathons, Superteam Earn bounties, GitHub commits, onchain activity, peer attestations, credentials).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": { "type": "string", "description": "The .sol domain to query, e.g. framew0rk.sol" }
+        },
+        "required": ["domain"]
+      }
+    },
+    {
+      "name": "list_top_builders",
+      "description": "Return the top N Solana builders ranked by Builder Score, optionally filtered by skill or status.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": { "type": "integer", "default": 25 },
+          "skill": { "type": "string" },
+          "min_score": { "type": "integer" }
+        }
+      }
+    },
+    {
+      "name": "send_intro_request",
+      "description": "Pay 1 USDC via x402 to send a verified intro request to a builder. Returns Solana transaction signature.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "to_domain": { "type": "string" },
+          "message": { "type": "string" },
+          "from_domain": { "type": "string" }
+        },
+        "required": ["to_domain", "message"]
+      }
+    },
+    {
+      "name": "list_attestations",
+      "description": "List wallet signed peer attestations for a builder.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": { "type": "string" }
+        },
+        "required": ["domain"]
+      }
+    }
+  ],
+  "resources": [
+    {
+      "uri": "skilld://leaderboard",
+      "name": "Top Solana Builders",
+      "description": "Live ranked list of top Solana builders.",
+      "mimeType": "application/json"
+    }
+  ]
+}

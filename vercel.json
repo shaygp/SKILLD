@@ -1,0 +1,22 @@
+{
+  "rewrites": [
+    { "source": "/superteam-api/(.*)", "destination": "https://superteam.fun/api/$1" },
+    { "source": "/api/mcp", "destination": "/api/mcp" },
+    { "source": "/((?!api|assets|.well-known).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/.well-known/skilld-mcp.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/json" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ]
+}
