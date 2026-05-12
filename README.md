@@ -385,6 +385,7 @@ Skilld exposes itself to AI agents through a Model Context Protocol descriptor a
 │ SNS            @bonfida/spl-name-service                         │
 │ SAS            sas-lib + gill                                    │
 │ MagicBlock     @magicblock-labs/ephemeral-rollups-sdk 0.13       │
+│ Umbra          @umbra-privacy/sdk 4.0.0 + web-zk-prover          │
 │ SPL Tokens     @solana/spl-token                                 │
 │ Crypto         bs58 for signature encoding                       │
 │ Hosting        Vercel SPA with rewrites and CORS for MCP         │
@@ -643,9 +644,10 @@ Real npm dependencies and real onchain transactions, no name dropping. Every cla
 | Bonfida SNS | Live | `@bonfida/spl-name-service`, Records V2 read and write, custom record key `skilld_score` |
 | Superteam Earn | Live | `superteam.fun/api` proxy, listings + feed live in production |
 | Coinbase x402 | Live devnet | `@solana/spl-token` SPL transfer, USDC mint `4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU`, confirmed transaction with 1 USDC payment |
-| MagicBlock | 🔵 Pattern A shipped | `@magicblock-labs/ephemeral-rollups-sdk` 0.13 imported, member flags computed, permission PDA derived. Anchor program migration scheduled post Frontier |
-| World ID | 🔵 Weighting model shipped | Anti sybil weighting in score formula, IDKit verifier integration scheduled |
-| Privy | 🔵 Component shipped | Email login flow component, embedded wallet creation scheduled |
+| Umbra Privacy | Live devnet | `@umbra-privacy/sdk` 4.0.0 + `@umbra-privacy/web-zk-prover`. One toggle in the paid intro modal swaps the public SPL transfer for a confidential Receiver Claimable UTXO. Both Skilld test wallets registered on the Umbra protocol with four confirmed transactions on Solana devnet, see the Umbra integration test section above |
+| MagicBlock | Pattern A shipped | `@magicblock-labs/ephemeral-rollups-sdk` 0.13 imported, member flags computed, permission PDA derived. Anchor program migration scheduled post Frontier |
+| World ID | Weighting model shipped | Anti sybil weighting in score formula, IDKit verifier integration scheduled |
+| Privy | Component shipped | Email login flow component, embedded wallet creation scheduled |
 | Helius | Live | RPC endpoint with attribution badge in footer |
 | Colosseum | Live | Hall of Fame curated dataset (32 winners across Cypherpunk, Breakout, Radar, AI Agent) |
 
