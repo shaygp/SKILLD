@@ -1,0 +1,10 @@
+[package]
+name = "skilld_attest_client"
+version = "0.1.0"
+edition = "2021"
+description = "Pure Rust client helpers for the Skilld attestation Anchor program. Derives PDAs and builds instruction data without depending on Anchor at runtime so any Rust program or off chain indexer can compose with skilld_attest through CPI or raw transactions."
+license = "MIT"
+
+[dependencies]
+solana-program = "1.18"
+sha2 = "0.10"

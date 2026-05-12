@@ -1,0 +1,10 @@
+[package]
+name = "skilld_score"
+version = "0.1.0"
+edition = "2021"
+description = "Pure Rust implementation of the Skilld Builder Score formula. Allows any Rust program or off chain indexer to recompute Builder Scores without depending on the TypeScript reference implementation, keeping the score formula auditable on both sides of the stack."
+license = "MIT"
+
+[lib]
+name = "skilld_score"
+path = "src/lib.rs"
