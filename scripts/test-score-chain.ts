@@ -195,7 +195,7 @@ async function main() {
   const existing = await fetchMaybeAttestation(client.rpc, scoreAttPda);
   let scoreSig: string | null = null;
   if (existing.exists) {
-    console.log(' ⚠️ already exists, skipping write');
+    console.log(' already exists, skipping write');
   } else {
     const data = {
       score: finalTotal,
@@ -249,7 +249,7 @@ async function main() {
     console.log(`  https://solscan.io/tx/${scoreSig}?cluster=devnet`);
   }
 
-  console.log('\n✅ SCORE RECOMPUTE CHAIN VERIFIED');
+  console.log('\nSCORE RECOMPUTE CHAIN VERIFIED');
   console.log('Each new wallet signed peer vouch issued onchain via SAS adds to the Builder Score in deterministic, verifiable way.');
 }
 

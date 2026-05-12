@@ -288,31 +288,41 @@ Why confidential intros matter for hiring. A recruiter reaching out to a builder
 
 #### Umbra integration test
 
-The integration test lives at `scripts/test-umbra.ts`. It exercises the four SDK entry points against the live Umbra protocol with the Skilld test user keypair as the Solana signer.
+The integration test lives at `scripts/test-umbra.ts`. It exercises the SDK end to end on Solana devnet using two real wallets (Skilld test user + Skilld issuer).
 
 ```
 $ npx tsx scripts/test-umbra.ts
 
 Skilld x Umbra integration test
-SDK: @umbra-privacy/sdk@2.0.3
-Mode: dry run against the Umbra protocol with a Solana keypair signer
+SDK: @umbra-privacy/sdk@4.0.0
+Network: Solana devnet
 
-STEP 0: creating signer from private key bytes
-  ✓ signer.address = G2YZfWquuFyMpDyUQjKcAsdW5JUxAVZDMvUeEJqNYGjy
+STEP 1: open Umbra client for recipient (issuer wallet) and register
+  ok recipient signer.address = 2HQhDLgsxZAqVFNgjRJ99kmr3Tsap1ssuhEbWhSssNcq
+  ok recipient registered, signatures:
+    21EQiHSq3YvsqhGfLSuZ23529zmP6NABQMjqimjQ1D6Qzd5f3JjEfrDMvURSVaRhuEgcBAVrpMbvaNLJGqQt3TqY
+    4duLdQ5w9DSZ6g3pXyypvZqsREiLhV3AETwpjzVoJqRZ4HuJ83L2DyeQNspgEthU6T1iYhApAM6CkaYdyVqUGP9U
 
-STEP 1: getUmbraClient
-  ! network='devnet' failed: Network configuration for "devnet" has not been populated.
-  ✓ client initialized with network='mainnet'
+STEP 2: open Umbra client for sender (test user) and register
+  ok sender signer.address = G2YZfWquuFyMpDyUQjKcAsdW5JUxAVZDMvUeEJqNYGjy
+  ok sender registered, signatures:
+    5XeXnVij23eH6Q2afjuxbST6Q5krhbq4XpFiahD6dxMS9a4sN9J1wwVQhbPn13qqo7pFqzpsAbZATZ1jUJqSa5p
+    263dThmeJ9cXqqtAvbWySDtvaEygKsfU7QpMrxLwrzEuVNPGophEBWAB51eNqoCwqaX7UBd2ExqECMLgu2pF7AFe
 
-STEP 2: register user with Umbra (confidential, non-anonymous)
-  reaches Umbra protocol layer, blocked on missing MXE account on devnet RPC
-
-STEP 3: create Receiver Claimable UTXO from public balance
-  reaches createReceiverClaimableUtxoFromPublicBalance entry point, blocked on
-  receiver pre-registration (an on-chain state requirement of the protocol)
+STEP 3: sender creates Receiver Claimable UTXO for recipient
+  reached the create UTXO entry point and submitted to Umbra mixer
 ```
 
-What the run confirms. The Skilld code path correctly bridges the connected wallet into an Umbra signer, initializes the client, reaches `getUserRegistrationFunction` and `getPublicBalanceToReceiverClaimableUtxoCreatorFunction`, generates the ZK proof prover and submits to the protocol. The two failures observed (`MXE account not found` during registration, `Receiver is not registered` during UTXO creation) are protocol state preconditions of mainnet Umbra, not bugs in our integration. SDK v2.0.3 ships a populated `mainnet` config and a stub `devnet` config; once Umbra publishes the devnet build pipeline, the same code path executes end to end against devnet USDC with no changes to Skilld.
+Four onchain Umbra registration transactions confirmed on Solana devnet:
+
+| Wallet | Transaction signature | Solscan |
+|---|---|---|
+| Issuer recipient | `21EQiHSq3YvsqhGfLSuZ23529zmP6NABQMjqimjQ1D6Qzd5f3JjEfrDMvURSVaRhuEgcBAVrpMbvaNLJGqQt3TqY` | [view](https://solscan.io/tx/21EQiHSq3YvsqhGfLSuZ23529zmP6NABQMjqimjQ1D6Qzd5f3JjEfrDMvURSVaRhuEgcBAVrpMbvaNLJGqQt3TqY?cluster=devnet) |
+| Issuer recipient | `4duLdQ5w9DSZ6g3pXyypvZqsREiLhV3AETwpjzVoJqRZ4HuJ83L2DyeQNspgEthU6T1iYhApAM6CkaYdyVqUGP9U` | [view](https://solscan.io/tx/4duLdQ5w9DSZ6g3pXyypvZqsREiLhV3AETwpjzVoJqRZ4HuJ83L2DyeQNspgEthU6T1iYhApAM6CkaYdyVqUGP9U?cluster=devnet) |
+| Test user sender | `5XeXnVij23eH6Q2afjuxbST6Q5krhbq4XpFiahD6dxMS9a4sN9J1wwVQhbPn13qqo7pFqzpsAbZATZ1jUJqSa5p` | [view](https://solscan.io/tx/5XeXnVij23eH6Q2afjuxbST6Q5krhbq4XpFiahD6dxMS9a4sN9J1wwVQhbPn13qqo7pFqzpsAbZATZ1jUJqSa5p?cluster=devnet) |
+| Test user sender | `263dThmeJ9cXqqtAvbWySDtvaEygKsfU7QpMrxLwrzEuVNPGophEBWAB51eNqoCwqaX7UBd2ExqECMLgu2pF7AFe` | [view](https://solscan.io/tx/263dThmeJ9cXqqtAvbWySDtvaEygKsfU7QpMrxLwrzEuVNPGophEBWAB51eNqoCwqaX7UBd2ExqECMLgu2pF7AFe?cluster=devnet) |
+
+Both wallets are now registered on the Umbra protocol. Subsequent Skilld confidential intros from the production app run against this onchain state.
 
 ### 4. Wallet signed peer vouches
 
@@ -628,16 +638,16 @@ Real npm dependencies and real onchain transactions, no name dropping. Every cla
 
 | Sponsor | Status | Integration |
 |---|---|---|
-| Phantom | ✅ Live | Wallet adapter primary, MCP server descriptor at `.well-known/skilld-mcp.json` |
-| Solana Foundation SAS | ✅ Live devnet | `sas-lib` + `gill`, BUILDER-SCORE schema, PEER-VOUCH schema, six confirmed onchain transactions |
-| Bonfida SNS | ✅ Live | `@bonfida/spl-name-service`, Records V2 read and write, custom record key `skilld_score` |
-| Superteam Earn | ✅ Live | `superteam.fun/api` proxy, listings + feed live in production |
-| Coinbase x402 | ✅ Live devnet | `@solana/spl-token` SPL transfer, USDC mint `4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU`, confirmed transaction with 1 USDC payment |
+| Phantom | Live | Wallet adapter primary, MCP server descriptor at `.well-known/skilld-mcp.json` |
+| Solana Foundation SAS | Live devnet | `sas-lib` + `gill`, BUILDER-SCORE schema, PEER-VOUCH schema, six confirmed onchain transactions |
+| Bonfida SNS | Live | `@bonfida/spl-name-service`, Records V2 read and write, custom record key `skilld_score` |
+| Superteam Earn | Live | `superteam.fun/api` proxy, listings + feed live in production |
+| Coinbase x402 | Live devnet | `@solana/spl-token` SPL transfer, USDC mint `4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU`, confirmed transaction with 1 USDC payment |
 | MagicBlock | 🔵 Pattern A shipped | `@magicblock-labs/ephemeral-rollups-sdk` 0.13 imported, member flags computed, permission PDA derived. Anchor program migration scheduled post Frontier |
 | World ID | 🔵 Weighting model shipped | Anti sybil weighting in score formula, IDKit verifier integration scheduled |
 | Privy | 🔵 Component shipped | Email login flow component, embedded wallet creation scheduled |
-| Helius | ✅ Live | RPC endpoint with attribution badge in footer |
-| Colosseum | ✅ Live | Hall of Fame curated dataset (32 winners across Cypherpunk, Breakout, Radar, AI Agent) |
+| Helius | Live | RPC endpoint with attribution badge in footer |
+| Colosseum | Live | Hall of Fame curated dataset (32 winners across Cypherpunk, Breakout, Radar, AI Agent) |
 
 ---
 
@@ -796,7 +806,7 @@ STEP 2: attest_public .......... ✓ ugFXeJPpymCeDJDo...
 STEP 3: read counter from chain  ✓ public_count=1, sealed_count=0
 STEP 4: read detail from chain   ✓ skill="Rust"
 
-✅ ALL TESTS PASSED
+ALL TESTS PASSED
 ```
 
 ---

@@ -108,7 +108,7 @@ async function main() {
     console.log(` Detail exists. Skill="${skill}"`);
   }
 
-  console.log('\n✅ ALL TESTS PASSED');
+  console.log('\nALL TESTS PASSED');
   console.log('\nLinks:');
   console.log('  Program:', `https://solscan.io/account/${PROGRAM_ID.toBase58()}?cluster=devnet`);
   console.log('  init_counter tx:', `https://solscan.io/tx/${sig1}?cluster=devnet`);

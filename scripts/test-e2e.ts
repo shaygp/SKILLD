@@ -118,7 +118,7 @@ async function main() {
   const existing = await fetchMaybeAttestation(client.rpc, vouchAttPda);
   let vouchTxSig: string | null = null;
   if (existing.exists) {
-    console.log(' ⚠️ already exists, skipping');
+    console.log(' already exists, skipping');
   } else {
     const ix = getCreateAttestationInstruction({
       payer: issuerSigner,
@@ -221,7 +221,7 @@ async function main() {
   const existingScore = await fetchMaybeAttestation(client.rpc, scoreAttPda);
   let scoreTxSig: string | null = null;
   if (existingScore.exists) {
-    console.log(' ⚠️ already exists, skipping');
+    console.log(' already exists, skipping');
   } else {
     const data = {
       score: 68,
@@ -265,7 +265,7 @@ async function main() {
   }
 
   logSection('SUMMARY');
-  console.log('\n✅ FULL E2E FLOW PASSED');
+  console.log('\nFULL E2E FLOW PASSED');
   console.log('\nTransactions broadcast:');
   if (vouchTxSig) console.log('  PEER-VOUCH SAS attestation:', vouchTxSig);
   console.log('  x402 USDC paid intro:        ', introSig);

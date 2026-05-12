@@ -92,7 +92,7 @@ async function main() {
   console.log(' explorer: https://solscan.io/tx/' + sig3 + '?cluster=devnet');
 
   logSection('SUMMARY');
-  console.log('\n✅ Three additional Solana mainnet-style memo broadcasts confirmed on devnet.');
+  console.log('\nThree additional Solana mainnet-style memo broadcasts confirmed on devnet.');
   console.log('Memo program is the fallback counter rail until skilld_attest Anchor program ships.');
   console.log('\nNew txs:');
   console.log('  Public vouch memo:  ', sig1);

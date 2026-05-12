@@ -3,7 +3,6 @@ import {
   getUserRegistrationFunction,
   getPublicBalanceToReceiverClaimableUtxoCreatorFunction,
   createSignerFromWalletAccount,
-  type IUmbraClient,
 } from '@umbra-privacy/sdk';
 import { getCreateReceiverClaimableUtxoFromPublicBalanceProver } from '@umbra-privacy/web-zk-prover';
 import type { WalletAdapter } from '@solana/wallet-adapter-base';
@@ -14,14 +13,17 @@ const INDEXER = 'https://utxo-indexer.api.umbraprivacy.com';
 
 export const UMBRA_PROGRAM_DEVNET = 'DSuKkyqGVGgo4QtPABfxKJKygUDACbUhirnuv63mEpAJ';
 
+type UmbraClientType = Awaited<ReturnType<typeof getUmbraClient>>;
+
 export type UmbraSession = {
-  client: IUmbraClient;
+  client: UmbraClientType;
 };
 
 export async function createUmbraSession(adapter: WalletAdapter): Promise<UmbraSession> {
-  const account = (adapter as unknown as { wallet?: { accounts?: unknown[] } }).wallet?.accounts?.[0];
-  if (!account) throw new Error('Wallet account not exposed via Wallet Standard');
-  const signer = await createSignerFromWalletAccount(account as never);
+  const standard = (adapter as unknown as { wallet?: unknown }).wallet;
+  const account = ((adapter as unknown as { wallet?: { accounts?: unknown[] } }).wallet?.accounts ?? [])[0];
+  if (!standard || !account) throw new Error('Wallet not exposed via Wallet Standard');
+  const signer = createSignerFromWalletAccount(standard as never, account as never);
 
   const client = await getUmbraClient({
     signer,
@@ -34,9 +36,10 @@ export async function createUmbraSession(adapter: WalletAdapter): Promise<UmbraS
   return { client };
 }
 
-export async function ensureRegistered(session: UmbraSession): Promise<void> {
+export async function ensureRegistered(session: UmbraSession): Promise<readonly string[]> {
   const register = getUserRegistrationFunction({ client: session.client });
-  await register({ confidential: true, anonymous: true });
+  const sigs = await register({ confidential: true, anonymous: false });
+  return sigs as unknown as readonly string[];
 }
 
 export async function sendConfidentialIntro(
@@ -53,11 +56,11 @@ export async function sendConfidentialIntro(
   const result = await createUtxo({
     destinationAddress: recipientBase58 as never,
     mint: usdcMint as never,
-    amount: amountAtomic,
+    amount: amountAtomic as never,
   });
   const sig =
     (result as { signature?: string }).signature ??
     (result as { txSignature?: string }).txSignature ??
-    'umbra-utxo-created';
+    (Array.isArray(result) ? (result[0] as string) : 'umbra-utxo-created');
   return sig;
 }
