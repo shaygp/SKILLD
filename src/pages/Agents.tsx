@@ -157,7 +157,7 @@ export function AgentsPage() {
             <li>
               <Link to="/attestations" className="block border border-border rounded p-3 hover:bg-surface-2 transition">
                 <div className="text-[11px] text-text-3 font-bold uppercase tracking-wider">Onchain confirmations</div>
-                <div className="text-text font-semibold text-[18px] mt-0.5 tabular-nums">16</div>
+                <div className="text-text font-semibold text-[18px] mt-0.5 tabular-nums">20</div>
                 <div className="text-text-2 text-[12px] mt-0.5">Verifiable Solscan replay</div>
               </Link>
             </li>
@@ -173,6 +173,18 @@ export function AgentsPage() {
                 <div className="text-text-2 text-[12px] mt-0.5">Discoverable by any agent</div>
               </a>
             </li>
+            <li>
+              <a
+                href="https://solscan.io/tx/21EQiHSq3YvsqhGfLSuZ23529zmP6NABQMjqimjQ1D6Qzd5f3JjEfrDMvURSVaRhuEgcBAVrpMbvaNLJGqQt3TqY?cluster=devnet"
+                target="_blank"
+                rel="noreferrer"
+                className="block border border-border rounded p-3 hover:bg-surface-2 transition"
+              >
+                <div className="text-[11px] text-text-3 font-bold uppercase tracking-wider">Umbra register</div>
+                <div className="text-text font-semibold text-[14px] mt-0.5 font-mono">21EQiHSq…3TqY</div>
+                <div className="text-text-2 text-[12px] mt-0.5">Confidential intro rail registered onchain</div>
+              </a>
+            </li>
           </ul>
         </div>
       </main>
@@ -186,7 +198,7 @@ export function AgentsPage() {
             <StackItem label="Identity" value="SNS Records V2" />
             <StackItem label="Reputation" value="Solana Attestation Service" />
             <StackItem label="Payments" value="x402 USDC on Solana" />
-            <StackItem label="Privacy" value="MagicBlock PER" />
+            <StackItem label="Privacy" value="MagicBlock PER + Umbra" />
           </ul>
         </div>
 

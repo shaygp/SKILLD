@@ -86,16 +86,17 @@ function Hero({ onSearch, q, setQ }: { onSearch: (e: React.FormEvent) => void; q
             <span>SAS,</span>
             <span>x402,</span>
             <span>MagicBlock,</span>
+            <span>Umbra,</span>
             <span>World ID,</span>
             <span>Phantom MCP</span>
           </div>
         </div>
 
         <div className="lg:col-span-5 grid grid-cols-1">
-          <HeroStat label="Onchain confirmations" value="16" sub="Verifiable on Solscan devnet" />
+          <HeroStat label="Onchain confirmations" value="20" sub="Verifiable on Solscan devnet" />
           <HeroStat label="Anchor program" value="LIVE" sub="4prD…Z5Cn6 on devnet" />
           <HeroStat label="MCP tools" value="4" sub="Agent ready Phantom router" />
-          <HeroStat label="Stack primitives" value="07" sub="Composable open data" highlight />
+          <HeroStat label="Stack primitives" value="08" sub="Composable open data" highlight />
         </div>
       </div>
     </div>
@@ -182,6 +183,7 @@ function NetworkRail() {
         <PrimitiveRow label="Colosseum Hall of Fame" sub="Hackathon track record" url="https://arena.colosseum.org" />
         <PrimitiveRow label="x402" sub="Paid intros in USDC" url="https://solana.com/x402" />
         <PrimitiveRow label="MagicBlock PER" sub="Sealed private vouches" url="https://docs.magicblock.gg" />
+        <PrimitiveRow label="Umbra" sub="Confidential paid intros" url="https://www.umbraprivacy.com/" />
         <PrimitiveRow label="World ID" sub="Anti sybil weighting" url="https://world.org" />
       </ul>
     </div>
@@ -431,7 +433,8 @@ function FooterNav() {
         <span className="text-text font-semibold">SAS</span>,
         <span className="text-text font-semibold">SNS</span>,
         <span className="text-text font-semibold">x402</span>,
-        <span className="text-text font-semibold">MagicBlock</span>
+        <span className="text-text font-semibold">MagicBlock</span>,
+        <span className="text-text font-semibold">Umbra</span>
       </div>
     </div>
   );

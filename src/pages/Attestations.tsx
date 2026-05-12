@@ -3,7 +3,7 @@ import { useAllAttestations } from '../lib/attestations/hooks';
 import { Avatar } from './Home';
 
 type OnchainAttestation = {
-  kind: 'BUILDER-SCORE' | 'PEER-VOUCH' | 'X402_PAID_INTRO' | 'SEALED_MEMO' | 'PROGRAM_DEPLOY' | 'PROGRAM_CALL';
+  kind: 'BUILDER-SCORE' | 'PEER-VOUCH' | 'X402_PAID_INTRO' | 'SEALED_MEMO' | 'PROGRAM_DEPLOY' | 'PROGRAM_CALL' | 'UMBRA_REGISTER';
   fromLabel: string;
   toLabel: string;
   detail: string;
@@ -148,6 +148,42 @@ const ONCHAIN_LOG: OnchainAttestation[] = [
     cluster: 'devnet',
     issuedAt: '2026-05-10T11:01:00Z',
   },
+  {
+    kind: 'UMBRA_REGISTER',
+    fromLabel: 'skilld issuer',
+    toLabel: 'Umbra protocol',
+    detail: 'Recipient wallet registered with the Umbra confidential transfer protocol on devnet',
+    txSig: '21EQiHSq3YvsqhGfLSuZ23529zmP6NABQMjqimjQ1D6Qzd5f3JjEfrDMvURSVaRhuEgcBAVrpMbvaNLJGqQt3TqY',
+    cluster: 'devnet',
+    issuedAt: '2026-05-12T08:30:00Z',
+  },
+  {
+    kind: 'UMBRA_REGISTER',
+    fromLabel: 'skilld issuer',
+    toLabel: 'Umbra protocol',
+    detail: 'Second register transaction for recipient wallet, encrypted user account allocation',
+    txSig: '4duLdQ5w9DSZ6g3pXyypvZqsREiLhV3AETwpjzVoJqRZ4HuJ83L2DyeQNspgEthU6T1iYhApAM6CkaYdyVqUGP9U',
+    cluster: 'devnet',
+    issuedAt: '2026-05-12T08:30:30Z',
+  },
+  {
+    kind: 'UMBRA_REGISTER',
+    fromLabel: 'test user wallet',
+    toLabel: 'Umbra protocol',
+    detail: 'Sender wallet registered with the Umbra protocol, ready to send confidential paid intros',
+    txSig: '5XeXnVij23eH6Q2afjuxbST6Q5krhbq4XpFiahD6dxMS9a4sN9J1wwVQhbPn13qqo7pFqzpsAbZATZ1jUJqSa5p',
+    cluster: 'devnet',
+    issuedAt: '2026-05-12T08:31:00Z',
+  },
+  {
+    kind: 'UMBRA_REGISTER',
+    fromLabel: 'test user wallet',
+    toLabel: 'Umbra protocol',
+    detail: 'Second register transaction for sender wallet, encrypted user account allocation',
+    txSig: '263dThmeJ9cXqqtAvbWySDtvaEygKsfU7QpMrxLwrzEuVNPGophEBWAB51eNqoCwqaX7UBd2ExqECMLgu2pF7AFe',
+    cluster: 'devnet',
+    issuedAt: '2026-05-12T08:31:30Z',
+  },
 ];
 
 const KIND_STYLE: Record<OnchainAttestation['kind'], { label: string; bg: string; text: string }> = {
@@ -157,6 +193,7 @@ const KIND_STYLE: Record<OnchainAttestation['kind'], { label: string; bg: string
   'SEALED_MEMO': { label: 'SEALED MEMO', bg: 'bg-warning', text: 'text-white' },
   'PROGRAM_DEPLOY': { label: 'PROGRAM DEPLOY', bg: 'bg-success-bright', text: 'text-text' },
   'PROGRAM_CALL': { label: 'PROGRAM CALL', bg: 'bg-success-bright', text: 'text-text' },
+  'UMBRA_REGISTER': { label: 'UMBRA REGISTER', bg: 'bg-text', text: 'text-bg' },
 };
 
 export function AttestationsPage() {
@@ -266,6 +303,7 @@ export function AttestationsPage() {
             <li className="flex items-center gap-2"><Check /><span>SAS PEER-VOUCH schema</span></li>
             <li className="flex items-center gap-2"><Check /><span>SNS Records V2 score writer</span></li>
             <li className="flex items-center gap-2"><Check /><span>x402 USDC SPL Token transfer</span></li>
+            <li className="flex items-center gap-2"><Check /><span>Umbra confidential UTXO paid intro</span></li>
             <li className="flex items-center gap-2"><Check /><span>MagicBlock TEE attestation + bearer token</span></li>
             <li className="flex items-center gap-2"><Check /><span>Sealed memo broadcast rail</span></li>
             <li className="flex items-center gap-2"><Check /><span>Phantom MCP server endpoint</span></li>
